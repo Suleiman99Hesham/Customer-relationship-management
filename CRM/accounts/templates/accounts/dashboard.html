@@ -18,7 +18,13 @@
 					<th>Customer</th>
 					<th>Orders</th>
 				</tr>
-
+				{% for customer, num_of_orders in customers_orders.items %}
+				<tr>
+					<th></th>
+					<th>{{ customer }}</th>
+					<th>{{ num_of_orders }}</th>
+				</tr>
+				{% endfor %}
 			</table>
 		</div>
 	</div>
@@ -36,7 +42,15 @@
 					<th>Update</th>
 					<th>Remove</th>
 				</tr>
-		
+				{% for order in last_orders %}
+					<tr>
+					<th>{{order.product.name}}</th>
+					<th> {{ order.date_created }} </th>
+					<th> {{ order.status }} </th>
+					<th> <a href="">Update</a> </th>
+					<th><a href="">Remove</a></th>
+					</tr>
+				{% endfor %}
 			</table>
 		</div>
 	</div>
