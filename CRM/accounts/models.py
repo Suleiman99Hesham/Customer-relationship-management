@@ -9,6 +9,11 @@ class Customer(models.Model):
     email = models.EmailField(max_length=254, null=True)
     date_created  = models.DateTimeField(auto_now_add=True, null=True)
     
+    def calculateOrders(self):
+        return Order.objects.filter(customer=self).count()
+
+    num_of_orders = property(calculateOrders)
+
     def __str__(self):
         return self.name
 
@@ -48,4 +53,4 @@ class Order(models.Model):
     status = models.CharField(max_length=200, null=True, choices=STATUS)
     
     def __str__(self):
-        return 'Order NO.'+str(self.id)
+        return self.product.name
