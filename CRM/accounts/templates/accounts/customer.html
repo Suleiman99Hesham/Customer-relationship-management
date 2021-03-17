@@ -7,7 +7,7 @@
 <div class="row">
 	<div class="col-md">
 		<div class="card card-body">
-			<h5>Customer:</h5>
+			<h5>Customer: {{customer.name}}</h5>
 			<hr>
 			<a class="btn btn-outline-info  btn-sm btn-block" href="">Update Customer</a>
 			<a class="btn btn-outline-success  btn-sm btn-block" href="{% url 'create_order' customer.id%}">Place New Order</a>
@@ -37,7 +37,8 @@
 <div class="row">
 	<div class="col">
 		<div class="card card-body">
-			<form method="get">
+			<form method="GET" class=".form-inline">
+				{{myFilter.form}}
 		    <button class="btn btn-primary" type="submit">Search</button>
 		  </form>
 		</div>
@@ -52,6 +53,7 @@
 			<table class="table table-sm">
 				<tr>
 					<th>Product</th>
+					<th>Note</th>
 					<th>Category</th>
 					<th>Date Orderd</th>
 					<th>Status</th>
@@ -61,11 +63,12 @@
 				{% for order in orders %}
 					<tr>
 						<th> {{ order.product }} </th>
+						<th> {{ order.note }} </th>
 						<th> {{ order.product.category }} </th>
 						<th> {{ order.date_created }} </th>
 						<th> {{ order.status }} </th>
-						<th><a class='btn btn-sm btn-info' href="">Update</a></th>
-						<th><a class='btn btn-sm btn-danger' href="">Remove</a></th>
+						<th><a class='btn btn-sm btn-info' href="{% url 'update_customer_order' order.id %}">Update</a></th>
+						<th><a class='btn btn-sm btn-danger' href="{% url 'delete_customer_order' order.id %}">Remove</a></th>
 					</tr>
 				{% endfor %}
 			</table>

@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
-from .forms import orderForm
+from .filters import orderFilter
+from .forms import orderForm, customerOrderForm
 from django.forms import inlineformset_factory
 
 # Create your views here.
@@ -36,10 +37,13 @@ def customer(request, id):
     customer = Customer.objects.get(id=id)
     total_orders = customer.order_set.all().count()
     orders = customer.order_set.all()
+    myFilter = orderFilter(request.GET, queryset=orders)
+    orders = myFilter.qs
     context = {
         'customer' : customer,
         'orders' : orders,
         'total_orders' : total_orders,
+        'myFilter' : myFilter,
     }
     return render(request, 'accounts/customer.html', context)
 
@@ -53,12 +57,24 @@ def createOrder(request, id):
         formset = OrderFormSet(request.POST, instance=customer)
         if formset.is_valid():
             formset.save()
-        return redirect('/')
+        return redirect('customer', customer.id)
     context = {
         'formset' : formset
     }
     return render(request, 'accounts/order_form.html', context)
 
+def updateCustomerOrder(request, id):
+    order = Order.objects.get(id=id)
+    form = customerOrderForm(instance=order)
+    if request.method == 'POST':
+        form = customerOrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+        return redirect('customer' ,order.customer.id)
+    context ={
+        'form' : form
+    }
+    return render(request, 'accounts/update_customer_order.html', context)
 
 def updateOrder(request, id):
     order = Order.objects.get(id=id)
@@ -71,7 +87,7 @@ def updateOrder(request, id):
     context = {
         'form': form
         }
-    return render(request, 'accounts/order_form.html', context)
+    return render(request, 'accounts/update_order.html', context)
 
 def deleteOrder(request, id):
     order = Order.objects.get(id=id)
@@ -82,3 +98,13 @@ def deleteOrder(request, id):
         'order' : order
     }
     return render(request, 'accounts/delete.html', context)
+
+def deleteCustomerOrder(request, id):
+    order = Order.objects.get(id=id)
+    if request.method == "POST":
+        order.delete()
+        return redirect('customer' ,order.customer.id)
+    context={
+        'order' : order
+    }
+    return render(request, 'accounts/delete_customer_order.html', context)

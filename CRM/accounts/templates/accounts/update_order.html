@@ -8,15 +8,11 @@
             <div class="card card-body">
                 <form action="" method="POST">
                     {% csrf_token %}
-                    {{ formset.management_form }}
-                    {% for form in formset %}
-                        {{form}}
-                    <hr>                    
-                    {% endfor %}
+                    {{form.as_p}}
                     <table class="table table-sm" style="margin-bottom: 0px;">
                         <tr>
                             <th><input class="btn btn-success" type="submit" value="Submit"></th>
-                            <th style="text-align: right;"><a class='btn btn-info' href="{% url 'customer' formset.instance.id %}">Back</a></th>
+                            <th style="text-align: right;"><a class='btn btn-info' href="{% url 'home' %}">Back To Dashboard</a></th>
                         </tr>
                     </table>         
                 </form>
