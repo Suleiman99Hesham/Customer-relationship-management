@@ -22,12 +22,18 @@ def register(request):
             username = form.cleaned_data.get('username')
             group = Group.objects.get(name='customer')
             user.groups.add(group)
+            Customer.objects.create(
+                user=user,
+                name=username,
+            )
             messages.success(request, 'Account is created successfully for '+ username)
             return redirect('login')
     context = {
         'form' : form
         }
     return render(request, 'accounts/register.html', context)
+
+
 @unauthenticated_user
 def loginPage(request):
     if request.method == 'POST':
@@ -42,9 +48,11 @@ def loginPage(request):
     context = {}
     return render(request, 'accounts/login.html', context)
 
+
 def logoutUser(request):
     logout(request)
     return redirect('login')
+
 
 @login_required(login_url='login')
 @admin_only
@@ -70,16 +78,29 @@ def home(request):
     }
     return render(request, 'accounts/dashboard.html', context)
 
+
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
 def user_page(request):
-    context = {}
+    orders = request.user.customer.order_set.all()
+    total_orders = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='Pending').count()
+    context = {
+        'orders' : orders,
+        'total_orders' : total_orders,
+        'delivered' : delivered,
+        'pending' : pending,
+    }
     return render(request, 'accounts/user-page.html', context)
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def products(request):
     products = Product.objects.all()
     return render(request, 'accounts/products.html', {'products':products})
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -96,6 +117,7 @@ def customer(request, id):
         'myFilter' : myFilter,
     }
     return render(request, 'accounts/customer.html', context)
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -115,6 +137,7 @@ def createOrder(request, id):
     }
     return render(request, 'accounts/order_form.html', context)
 
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def updateCustomerOrder(request, id):
@@ -129,6 +152,7 @@ def updateCustomerOrder(request, id):
         'form' : form
     }
     return render(request, 'accounts/update_customer_order.html', context)
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -145,6 +169,7 @@ def updateOrder(request, id):
         }
     return render(request, 'accounts/update_order.html', context)
 
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def deleteOrder(request, id):
@@ -156,6 +181,7 @@ def deleteOrder(request, id):
         'order' : order
     }
     return render(request, 'accounts/delete.html', context)
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

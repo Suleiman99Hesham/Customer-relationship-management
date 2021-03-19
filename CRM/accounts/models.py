@@ -1,19 +1,27 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Customer(models.Model):
-
+    user = models.OneToOneField(User, null=True,on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True)
     phone = models.CharField(max_length=200, null=True)
     email = models.EmailField(max_length=254, null=True)
     date_created  = models.DateTimeField(auto_now_add=True, null=True)
     
-    def calculateOrders(self):
+    def calculateTotalOrders(self):
         return Order.objects.filter(customer=self).count()
 
-    num_of_orders = property(calculateOrders)
-
+    # def calculateDelivered(self):
+    #     return Order.objects.filter(customer=self, status='Delivered').count()
+    
+    # def calculatePending(self):
+    #     return Order.objects.filter(customer=self, status='Pending').count()
+    
+    num_of_orders = property(calculateTotalOrders)
+    # delivered = property(calculateDelivered)
+    # pending = property(calculatePending)
+    
     def __str__(self):
         return self.name
 
@@ -46,7 +54,7 @@ class Order(models.Model):
         ('Out for delivery', 'Out for delivery'),
         ('Delivered', 'Delivered'),
     )
-    customer = models.ForeignKey(Customer,null=True, on_delete=models.SET_NULL)
+    customer = models.ForeignKey(Customer,null=True, on_delete=models.CASCADE)
     product = models.ForeignKey(Product,null=True, on_delete=models.SET_NULL)
     
     date_created  = models.DateTimeField(auto_now_add=True, null=True)
