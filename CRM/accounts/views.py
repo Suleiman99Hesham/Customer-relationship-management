@@ -81,7 +81,7 @@ def home(request):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['customer'])
-def user_page(request):
+def user_page(request, name):
     orders = request.user.customer.order_set.all()
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
