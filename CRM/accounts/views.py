@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
 from .filters import orderFilter
-from .forms import orderForm, customerOrderForm, createUserForm
+from .forms import orderForm, customerOrderForm, createUserForm, CustomerForm
 from django.forms import inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -20,14 +20,20 @@ def register(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             group = Group.objects.get(name='customer')
             user.groups.add(group)
             Customer.objects.create(
                 user=user,
                 name=username,
+                email=email,
             )
             messages.success(request, 'Account is created successfully for '+ username)
             return redirect('login')
+        else:
+            for msg in form.error_messages:
+                messages.error(request, f"{msg}: {form.error_messages[msg]}")
+                print(msg)
     context = {
         'form' : form
         }
@@ -48,7 +54,7 @@ def loginPage(request):
     context = {}
     return render(request, 'accounts/login.html', context)
 
-
+@login_required(login_url='login')
 def logoutUser(request):
     logout(request)
     return redirect('login')
@@ -93,6 +99,20 @@ def user_page(request, name):
         'pending' : pending,
     }
     return render(request, 'accounts/user-page.html', context)
+
+
+@login_required(login_url='login')
+def account_settings(request):
+    customer = request.user.customer
+    form = CustomerForm(instance=customer)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+    context={
+        'form' : form,
+        }
+    return render(request, 'accounts/account-settings.html', context)
 
 
 @login_required(login_url='login')

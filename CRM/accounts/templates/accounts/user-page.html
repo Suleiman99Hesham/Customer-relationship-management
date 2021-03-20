@@ -12,8 +12,6 @@
 					<th>Category</th>
 					<th>Date Orderd</th>
 					<th>Status</th>
-					<th>Update</th>
-					<th>Remove</th>
 				</tr>
 				{% for order in orders %}
 					<tr>
@@ -22,8 +20,6 @@
 						<th> {{ order.product.category }} </th>
 						<th> {{ order.date_created }} </th>
 						<th> {{ order.status }} </th>
-						<th><a class='btn btn-sm btn-info' href="{% url 'update_customer_order' order.id %}">Update</a></th>
-						<th><a class='btn btn-sm btn-danger' href="{% url 'delete_customer_order' order.id %}">Remove</a></th>
 					</tr>
 				{% endfor %}
 			</table>

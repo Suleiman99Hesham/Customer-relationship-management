@@ -11,6 +11,12 @@
     margin-right: 8px;
     color: #e5e5e5;
   }
+  .profile-pic-nav{
+		max-width: 50px;
+		max-height:50px;
+		margin: 0 auto;
+		border-radius: 50%;
+	}
 </style>
 
 {% load static %}
@@ -28,7 +34,14 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'products' %}">Products</a>
           </li>
-        {% endif %}
+          {% else %}
+          <li class="nav-item">
+			      <img class="profile-pic-nav" src="{{request.user.customer.profile_pic.url}}" >
+          </li>
+          <li class="nav-item">
+           <a class="nav-link" href="{% url 'accounts-settings' %}">Settings</a>
+         </li>
+         {% endif %}
       </ul>
     </div>
     <span class="username" >hello, {{request.user}}</span>
