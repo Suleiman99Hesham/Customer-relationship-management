@@ -25,7 +25,6 @@ def register(request):
         else:
             for msg in form.error_messages:
                 messages.error(request, f"{msg}: {form.error_messages[msg]}")
-                print(msg)
     context = {
         'form' : form
         }
