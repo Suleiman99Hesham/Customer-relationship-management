@@ -6,22 +6,26 @@
 	<div class="col-md">
 		<div class="card card-body">
 			<table class="table table-sm">
-				<tr>
-					<th>Product</th>
-					<th>Note</th>
-					<th>Category</th>
-					<th>Date Orderd</th>
-					<th>Status</th>
-				</tr>
-				{% for order in orders %}
+				<thead class="thead-light">
 					<tr>
-						<th> {{ order.product }} </th>
-						<th> {{ order.note }} </th>
-						<th> {{ order.product.category }} </th>
-						<th> {{ order.date_created }} </th>
-						<th> {{ order.status }} </th>
+						<th>Product</th>
+						<th>Note</th>
+						<th>Category</th>
+						<th>Date Orderd</th>
+						<th>Status</th>
 					</tr>
-				{% endfor %}
+				</thead>
+				<tbody>
+					{% for order in orders %}
+						<tr>
+							<th> {{ order.product }} </th>
+							<th> {{ order.note }} </th>
+							<th> {{ order.product.category }} </th>
+							<th> {{ order.date_created }} </th>
+							<th> {{ order.status }} </th>
+						</tr>
+					{% endfor %}
+				</tbody>
 			</table>
 		</div>
 	</div>

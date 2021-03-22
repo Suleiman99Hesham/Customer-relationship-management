@@ -25,6 +25,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    {% if request.user.is_authenticated %}
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         {% if request.user.is_staff %}
@@ -45,5 +46,7 @@
       </ul>
     </div>
     <span class="username" >hello, {{request.user}}</span>
-    <span><a class ="logout" href="{% url 'logout' %}">Logout</a></span>
+    <span><a class ="logout" href="{% url 'logout' %}">Logout</a></span>  
+    
+    {% endif %}
   </nav>
