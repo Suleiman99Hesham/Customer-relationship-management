@@ -102,6 +102,7 @@ def account_settings(request):
             form.save()
     context={
         'form' : form,
+        'flag' : True,
         }
     return render(request, 'accounts/account-settings.html', context)
 
@@ -128,6 +129,21 @@ def customer(request, id):
         'myFilter' : myFilter,
     }
     return render(request, 'accounts/customer.html', context)
+
+
+def update_customer(request, id):
+    customer = Customer.objects.get(id=id)
+    form = CustomerForm(instance=customer)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+    context={
+        'form' : form,
+        'flag' : False,
+        'customer' : customer,
+        }
+    return render(request, 'accounts/account-settings.html', context)
 
 
 @login_required(login_url='login')
