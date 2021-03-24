@@ -1,0 +1,38 @@
+{% extends 'accounts/main.html' %}
+{% include 'accounts/navbar' %}
+{% block content %}
+<style>
+    ul{
+        list-style-type: none;
+    }
+</style>    
+<br>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-body">
+            <h5>New Product</h5>
+            </div>
+            <div class="card card-body" >
+                <form method='POST'>
+                    {% csrf_token %}
+                    {{form.name}}
+                    <br>
+                    {{form.price}}
+                    <br>
+                    {{form.category.label}}
+                    {{form.category}}
+                    <br>
+                    <br>
+                    {{form.description}}
+                    <br>
+                    {{form.tag.label}}
+                    <div class="form-check form-check-inline">
+                    {{form.tag}}
+                    </div>
+                    <br>
+                    <input type="submit" class="btn btn-primary" value='Add Product' style="float: right;"></input>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

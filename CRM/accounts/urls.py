@@ -37,4 +37,5 @@ urlpatterns = [
         name="password_reset_complete"
         ),
     path("update_customer/<int:id>", views.update_customer, name="update_customer"),
+    path("new_product/", views.newProduct, name="new_product")
 ]

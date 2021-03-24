@@ -7,7 +7,16 @@
 		<div class="row">
 			<div class="col-md">
 				<div class="card card-body">
-					<h5>Products</h5>
+					
+					<div class="row">
+						<div class="col-md-9">
+							<h5>Products</h5>
+							</div>
+							<div class="col-md-2">
+								<a class="btn btn-warning  btn-md btn-block" href="{% url 'new_product' %}">Put New Product</a>
+							</div>	
+					</div>
+					
 				</div>
 				<div class="card card-body">
 					<table class="table">
@@ -15,12 +24,16 @@
 							<th>Product</th>
 							<th>Category</th>
 							<th>Price</th>
+							<th>Update</th>
+							<th>Remove</th>
 						</tr>
 						{% for product in products %}
 							<tr>
 							<td>{{ product.name }}</td>
 							<td>{{ product.category }}</td>
 							<td>{{ product.price }}</td>
+							<td> <a class='btn btn-sm btn-info' href="">Update</a> </td>
+							<td> <a class='btn btn-sm btn-danger'href="">Remove</a></td>
 							</tr>
 						{% endfor %}
 					</table>
