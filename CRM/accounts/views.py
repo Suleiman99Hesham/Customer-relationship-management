@@ -102,7 +102,7 @@ def account_settings(request):
             form.save()
     context={
         'form' : form,
-        'flag' : True,
+        'flag' : False,
         }
     return render(request, 'accounts/account-settings.html', context)
 
@@ -130,7 +130,8 @@ def customer(request, id):
     }
     return render(request, 'accounts/customer.html', context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def update_customer(request, id):
     customer = Customer.objects.get(id=id)
     form = CustomerForm(instance=customer)
@@ -140,27 +141,34 @@ def update_customer(request, id):
             form.save()
     context={
         'form' : form,
-        'flag' : False,
+        'flag' : True,
         'customer' : customer,
         }
     return render(request, 'accounts/account-settings.html', context)
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'customer'])
 def createOrder(request, id):
     customer = Customer.objects.get(id=id)
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=7)
     formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
+    group = None
+    if request.user.groups.exists():
+        group = request.user.groups.all()[0].name
     # form = orderForm(initial={'customer':customer})
     if request.method == 'POST':
         # form = orderForm(request.POST)
         formset = OrderFormSet(request.POST, instance=customer)
         if formset.is_valid():
             formset.save()
-        return redirect('customer', customer.id)
+        if group == 'admin':
+            return redirect('customer', customer.id)
+        else:
+            return redirect('user-page', customer.name)
     context = {
-        'formset' : formset
+        'formset' : formset,
+        'group' : group,
     }
     return render(request, 'accounts/order_form.html', context)
 

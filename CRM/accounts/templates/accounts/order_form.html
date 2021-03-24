@@ -16,7 +16,11 @@
                     <table class="table table-sm" style="margin-bottom: 0px;">
                         <tr>
                             <th><input class="btn btn-success" type="submit" value="Submit"></th>
+                            {% if group == 'admin' %}
                             <th style="text-align: right;"><a class='btn btn-info' href="{% url 'customer' formset.instance.id %}">Back</a></th>
+                            {% else %}
+                            <th style="text-align: right;"><a class='btn btn-info' href="{% url 'user-page' request.user.customer.name %}">Back</a></th>
+                            {% endif %}
                         </tr>
                     </table>         
                 </form>
