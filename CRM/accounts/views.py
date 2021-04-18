@@ -56,18 +56,11 @@ def logoutUser(request):
 def home(request):
     customers = Customer.objects.all()
     last_orders = Order.objects.all().order_by('-date_created')[0:5]
-    # customers_orders = {}
     total_orders = Order.objects.all().count()
     delivered = Order.objects.filter(status='Delivered').count()
     pending = Order.objects.filter(status='Pending').count()
-    # for order in Order.objects.all():
-    #     if order.customer.name in customers_orders:
-    #         customers_orders[order.customer.name] += 1
-    #     else:
-    #         customers_orders[order.customer.name] = 1
     context = {
         'customers' :customers,
-        # 'customers_orders' : customers_orders,
         'last_orders' : last_orders,
         'total_orders' : total_orders,
         'delivered' : delivered,
@@ -169,9 +162,7 @@ def createOrder(request, id):
     customer = Customer.objects.get(id=id)
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=7)
     formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
-    # form = orderForm(initial={'customer':customer})
     if request.method == 'POST':
-        # form = orderForm(request.POST)
         formset = OrderFormSet(request.POST, instance=customer)
         if formset.is_valid():
             formset.save()
@@ -199,7 +190,6 @@ def customerMakeOrder(request):
             raise ValueError(form.errors)
     context = {
         'form' : form,
-        # 'quantity':quantity
     }
     return render(request, 'accounts/customer_make_order.html', context)
 

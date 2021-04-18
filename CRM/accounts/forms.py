@@ -31,21 +31,7 @@ class customerMakeOrderForm(ModelForm):
     class Meta:
         model = Order
         fields = ['product']
-# class customerMakeCountedOrder(customerMakeOrderForm):
-#     product_quantity = forms.IntegerField()
-#     class Meta(customerMakeOrderForm.Meta):
-#         fields = customerMakeOrderForm.Meta.fields+['product_quantity',]
-#         widgets={
-#             'product': forms.Select(attrs={
-#             'id': 'inlineFormCustomSelectPref',
-#             'style': 'background-color: light',
-#             }),
-#             'product_quantity': forms.NumberInput(attrs={
-#             'class': 'form-control',
-#             'placeholder': 'Price',
-#             }),
-#         }
-    
+        
 class createUserForm(UserCreationForm):
     
     class Meta:
