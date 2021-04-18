@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
 from .filters import orderFilter
-from .forms import orderForm, customerOrderForm, createUserForm, CustomerForm, productForm
+from .forms import orderForm, customerOrderForm, createUserForm, CustomerForm, productForm, customerMakeOrderForm
 from django.forms import inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -164,29 +164,44 @@ def update_customer(request, id):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin', 'customer'])
+@allowed_users(allowed_roles=['admin'])
 def createOrder(request, id):
     customer = Customer.objects.get(id=id)
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=7)
     formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
-    group = None
-    if request.user.groups.exists():
-        group = request.user.groups.all()[0].name
     # form = orderForm(initial={'customer':customer})
     if request.method == 'POST':
         # form = orderForm(request.POST)
         formset = OrderFormSet(request.POST, instance=customer)
         if formset.is_valid():
             formset.save()
-        if group == 'admin':
-            return redirect('customer', customer.id)
-        else:
-            return redirect('user-page', customer.name)
+        return redirect('customer', customer.id)
     context = {
         'formset' : formset,
-        'group' : group,
     }
     return render(request, 'accounts/order_form.html', context)
+
+
+def customerMakeOrder(request):
+    customer = Customer.objects.get(id=request.user.id)
+    form = customerMakeOrderForm()
+    if request.method == 'POST':
+        form = customerMakeOrderForm(request.POST)
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            new_order = form.save(commit=False)
+            new_order.customer = customer
+            for product in range(quantity):
+                new_order.save()
+                new_order.pk += 1
+            return redirect('user-page', request.user.customer.name)
+        else:
+            raise ValueError(form.errors)
+    context = {
+        'form' : form,
+        # 'quantity':quantity
+    }
+    return render(request, 'accounts/customer_make_order.html', context)
 
 
 @login_required(login_url='login')

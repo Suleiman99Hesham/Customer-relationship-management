@@ -1,0 +1,22 @@
+{% extends 'accounts/main.html' %}
+{% include 'accounts/navbar.html' %}
+{% block content %}
+<br>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-body">
+                <h5>Make New Order</h5>
+            </div>
+            <div class="card card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form}}
+                    <br>
+                    <br>
+                    <input type="submit" class="btn btn-primary" value='Make Order' style="float: right;"></input>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
