@@ -172,7 +172,8 @@ def createOrder(request, id):
     }
     return render(request, 'accounts/order_form.html', context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
 def customerMakeOrder(request):
     customer = Customer.objects.get(id=request.user.id)
     form = customerMakeOrderForm()
