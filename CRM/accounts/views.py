@@ -86,7 +86,7 @@ def user_page(request, name):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin', 'customer'])
+@allowed_users(allowed_roles=['customer'])
 def account_settings(request):
     customer = request.user.customer
     form = CustomerForm(instance=customer)
@@ -175,7 +175,7 @@ def createOrder(request, id):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['customer'])
 def customerMakeOrder(request):
-    customer = Customer.objects.get(id=request.user.id)
+    customer = request.user.customer
     form = customerMakeOrderForm()
     if request.method == 'POST':
         form = customerMakeOrderForm(request.POST)
