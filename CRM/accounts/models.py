@@ -13,15 +13,7 @@ class Customer(models.Model):
     def calculateTotalOrders(self):
         return Order.objects.filter(customer=self).count()
 
-    # def calculateDelivered(self):
-    #     return Order.objects.filter(customer=self, status='Delivered').count()
-    
-    # def calculatePending(self):
-    #     return Order.objects.filter(customer=self, status='Pending').count()
-    
     num_of_orders = property(calculateTotalOrders)
-    # delivered = property(calculateDelivered)
-    # pending = property(calculatePending)
     
     def __str__(self):
         return self.name
