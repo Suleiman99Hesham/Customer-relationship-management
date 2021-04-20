@@ -18,8 +18,16 @@ def register(request):
     if request.method == 'POST':
         form = createUserForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            my_group = Group.objects.filter(name='customer').count()
+            print(my_group)
             username = form.cleaned_data.get('username')
+            if my_group == 0:
+                my_group = Group.objects.create(name='customer')
+            else:
+                my_group = Group.objects.get(name='customer')
+            user = form.save()
+            user = User.objects.get(username=username)
+            user.groups.add(my_group)
             messages.success(request, 'Account is created successfully for '+ username)
             return redirect('login')
         else:
