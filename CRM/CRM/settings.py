@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'accounts.apps.AccountsConfig',
+    'django_filters',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +143,16 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'suleimanhesham99@gmail.com'
 EMAIL_HOST_PASSWORD = 'Cin>>"password";'
+
+
+#S3 BUCKETS CONFIG
+
+AWS_ACCESS_KEY_ID = 'AKIASRWIHME26EOCWGCS'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'suleiman-crm'
+AWS_S3_REGION_NAME = 'us-east-2'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
