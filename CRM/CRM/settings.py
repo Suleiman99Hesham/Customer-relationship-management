@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '#zx5_o^$j(%6#o9!9=c!kra*0xi=c$gds$59i&n)nd_60v)xw7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['suleiman-crm.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -46,6 +46,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,14 +81,21 @@ WSGI_APPLICATION = 'CRM.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'CRM',
+#         'USER': 'suleimanhesham',
+#         'PASSWORD': 'Suleiman1999',
+#         'HOST': 'database-1.ccckbqyroriz.us-east-2.rds.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'CRM',
-        'USER': 'suleimanhesham',
-        'PASSWORD': 'Suleiman1999',
-        'HOST': 'database-1.ccckbqyroriz.us-east-2.rds.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -126,6 +136,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
@@ -145,14 +156,14 @@ EMAIL_HOST_USER = 'suleimanhesham99@gmail.com'
 EMAIL_HOST_PASSWORD = 'Cin>>"password";'
 
 
-#S3 BUCKETS CONFIG
+# #S3 BUCKETS CONFIG
 
-AWS_ACCESS_KEY_ID = 'AKIASRWIHME26EOCWGCS'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'suleiman-crm'
-AWS_S3_REGION_NAME = 'us-east-2'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
+# AWS_ACCESS_KEY_ID = 'AKIASRWIHME26EOCWGCS'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'suleiman-crm'
+# AWS_S3_REGION_NAME = 'us-east-2'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
