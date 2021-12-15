@@ -1,2 +1,3 @@
-# Customer-relationship-management
-its a fully functional website for CRM, I am  practicing Django while working on it
+## Customer-relationship-management
+#CRM website lets customer make thier own accounts and make buying operations.
+#I am  practicing Django while working on it
