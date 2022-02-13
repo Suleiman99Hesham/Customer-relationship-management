@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from .decorators import unauthenticated_user, allowed_users, admin_only
+from django.db.models import F
 
 # Create your views here.
 
@@ -63,7 +64,7 @@ def logoutUser(request):
 @admin_only
 def home(request):
     customers = Customer.objects.all()
-    last_orders = Order.objects.all().order_by('-date_created')[0:5]
+    last_orders = Order.objects.select_related('customer__user', 'product').prefetch_related('product__tag').all().order_by('-date_created')[0:5]
     total_orders = Order.objects.all().count()
     delivered = Order.objects.filter(status='Delivered').count()
     pending = Order.objects.filter(status='Pending').count()
@@ -135,7 +136,7 @@ def newProduct(request):
 @allowed_users(allowed_roles=['admin'])
 def customer(request, id):
     customer = Customer.objects.get(id=id)
-    total_orders = customer.order_set.all().count()
+    total_orders = customer.num_of_orders
     orders = customer.order_set.all()
     myFilter = orderFilter(request.GET, queryset=orders)
     orders = myFilter.qs
@@ -172,8 +173,11 @@ def createOrder(request, id):
     formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
     if request.method == 'POST':
         formset = OrderFormSet(request.POST, instance=customer)
+        orders_count_before=Order.objects.all().count()
         if formset.is_valid():
             formset.save()
+        orders_count_after=Order.objects.all().count()
+        Customer.objects.filter(pk=customer.id).update(num_of_orders = F('num_of_orders') +(orders_count_after-orders_count_before) )
         return redirect('customer', customer.id)
     context = {
         'formset' : formset,
@@ -194,6 +198,7 @@ def customerMakeOrder(request):
             for product in range(quantity):
                 new_order.save()
                 new_order.pk += 1
+            Customer.objects.filter(pk=customer.id).update(num_of_orders = F('num_of_orders')+quantity)
             return redirect('user-page', request.user.customer.name)
         else:
             raise ValueError(form.errors)
@@ -240,6 +245,7 @@ def updateOrder(request, id):
 def deleteOrder(request, id):
     order = Order.objects.get(id=id)
     if request.method == "POST":
+        Customer.objects.filter(pk=order.customer.id).update(num_of_orders = F('num_of_orders')-1)
         order.delete()
         return redirect('/')
     context={
@@ -253,6 +259,7 @@ def deleteOrder(request, id):
 def deleteCustomerOrder(request, id):
     order = Order.objects.get(id=id)
     if request.method == "POST":
+        Customer.objects.filter(pk=order.customer.id).update(num_of_orders = F('num_of_orders')-1)
         order.delete()
         return redirect('customer' ,order.customer.id)
     context={
